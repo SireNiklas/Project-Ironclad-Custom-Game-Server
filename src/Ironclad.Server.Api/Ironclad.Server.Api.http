@@ -1,0 +1,6 @@
+@Ironclad.Server.Api_HostAddress = http://localhost:5177
+
+GET {{Ironclad.Server.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
