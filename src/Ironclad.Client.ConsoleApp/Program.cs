@@ -1,28 +1,44 @@
-﻿using Ironclad.Client.Core.Services;
+﻿using Ironclad.Client.Core.Game;
+using Ironclad.Client.Core.Services;
 using Ironclad.Shared.DTOs;
 
 namespace Ironclad.Client.ConsoleApp;
 
 class Program
 {
+    private static GameClient _gameClient;
+    
+    // Input loop and dictates how to show information.
     static async Task Main(string[] args)
     {
-		GameConnection gameConnection = new GameConnection();
+        _gameClient = new GameClient();
+        await _gameClient.Start();
         
-        gameConnection.OnMessageAllReceived += (sender, message) => Console.WriteLine($"Global: {message}");
-        gameConnection.OnMessageOthersReceived += (sender, message) => Console.WriteLine($"Others: {message}");
-        gameConnection.OnMessageCallerReceived += (sender, message) => Console.WriteLine($"Me: {message}");
-        gameConnection.OnCardPlayedReceived += (sender, cardDTO) => Console.WriteLine($"Me: {cardDTO.Name}");
+        // Input loop
+        while (_gameClient.GameActive)
+        {
+            ConsoleKeyInfo key = Console.ReadKey(true);
+            await HandleInput(key);
+        }
+    }
 
-        await gameConnection.ConnectAsync("http://localhost:5177/game");
-        Console.WriteLine("Connected to server");
-        
-        await gameConnection.PlayCardAsync(new CardDTO("TestCard", 5, 7, 2));
-        
-        Console.WriteLine("Press any key to exit...");
-        Console.ReadKey();
-        
-        await gameConnection.DisconnectAsync();
-        Console.WriteLine("Disconnected from server");
+    private static async Task HandleInput(ConsoleKeyInfo key)
+    {
+        switch (key.Key)
+        {
+            case ConsoleKey.P:
+                //Console.WriteLine(GameState.Player.Name);
+                
+                await PlayerActions.RequestGameState();
+                Console.WriteLine(GameState.Player);
+                break;
+                // Play Card "menu"
+            case ConsoleKey.E:
+                break;
+                // End Turn
+            case ConsoleKey.Escape:
+                _gameClient.GameActive = false;
+                break;
+        }
     }
 }

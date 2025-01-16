@@ -1,3 +1,5 @@
+using Ironclad.Shared.DTOs;
+
 namespace Ironclad.Server.Core.Models;
 
 public class Card
@@ -16,5 +18,15 @@ public class Card
         Attack = attack;
         Defense = defense;
         Cost = cost;
+    }
+}
+
+public static class CardExtensions
+{
+    public static List<CardDTO> ToDTO(this Card card)
+    {
+        return new List<CardDTO>(
+            card.ToDTO()
+        );
     }
 }

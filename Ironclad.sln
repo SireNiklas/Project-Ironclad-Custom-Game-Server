@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ironclad.Shared", "src\Iron
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ironclad.Client.Core", "src\Ironclad.Client.Core\Ironclad.Client.Core.csproj", "{62B6DA5F-A9E0-4128-B49A-4560F6FC5DFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ironclad.Client.ConsoleApp", "src\Ironclad.Client.Console\Ironclad.Client.ConsoleApp.csproj", "{91E80A9C-7218-483A-94B9-6E8E279F7A51}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ironclad.Client.ConsoleApp", "src\Ironclad.Client.ConsoleApp\Ironclad.Client.ConsoleApp.csproj", "{0A7DC9D3-0575-4EEC-91E0-63C31B5DF878}"
 EndProject
 Global
@@ -34,10 +32,6 @@ Global
 		{62B6DA5F-A9E0-4128-B49A-4560F6FC5DFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62B6DA5F-A9E0-4128-B49A-4560F6FC5DFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62B6DA5F-A9E0-4128-B49A-4560F6FC5DFA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91E80A9C-7218-483A-94B9-6E8E279F7A51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91E80A9C-7218-483A-94B9-6E8E279F7A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91E80A9C-7218-483A-94B9-6E8E279F7A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91E80A9C-7218-483A-94B9-6E8E279F7A51}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0A7DC9D3-0575-4EEC-91E0-63C31B5DF878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0A7DC9D3-0575-4EEC-91E0-63C31B5DF878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A7DC9D3-0575-4EEC-91E0-63C31B5DF878}.Release|Any CPU.ActiveCfg = Release|Any CPU

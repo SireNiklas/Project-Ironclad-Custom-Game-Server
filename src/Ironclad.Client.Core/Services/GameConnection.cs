@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Ironclad.Client.Core.Game;
 using Ironclad.Client.Core.Interfaces;
 using Ironclad.Shared.DTOs;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -7,29 +8,46 @@ namespace Ironclad.Client.Core.Services;
 
 public class GameConnection : IGameConnection
 {
+    private static GameConnection _instance;
+    private static readonly object _lock = new object();
     private HubConnection? _hubConnection;
+    public event EventHandler<string>? OnConnected;
+    public event EventHandler<GameStateDTO>? UpdatedGameState;
+    public event EventHandler<CardDTO>? OnCardPlayedReceived;
 
-    public event EventHandler<string>? OnMessageAllReceived; 
-    public event EventHandler<string>? OnMessageOthersReceived; 
-    public event EventHandler<string>? OnMessageCallerReceived; 
-    public event EventHandler<CardDTO>? OnCardPlayedReceived; 
+    public string playerName { get; set; }
+    
+    // Singleton accessor
+    public static GameConnection Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                lock (_lock)
+                {
+                    _instance ??= new GameConnection();
+                }
+            }
+            return _instance;
+        }
+    }
     
     public async Task ConnectAsync(string serverUrl)
     {
-        _hubConnection = new HubConnectionBuilder().WithUrl(serverUrl).Build();
+        _hubConnection = new HubConnectionBuilder().WithUrl($"{serverUrl}?playerName={playerName}").Build();
+        PlayerActions.Initialize(_hubConnection);
+        
 
         // Register Handlers
-        _hubConnection.On<string>("ReceiveMessageAll", (message)
-            => OnMessageAllReceived?.Invoke(this, message));
-        
-        _hubConnection.On<string>("ReceiveMessageOthers", (message)
-            => OnMessageOthersReceived?.Invoke(this, message));
-        
-        _hubConnection.On<string>("ReceiveMessageCaller", (message)
-            => OnMessageCallerReceived?.Invoke(this, message));
+        _hubConnection.On<GameStateDTO>("UpdatedGameState", (gameStateDTO)
+            => UpdatedGameState?.Invoke(this, gameStateDTO));
         
         _hubConnection.On<CardDTO>("PlayedCard", (cardDTO)
             => OnCardPlayedReceived?.Invoke(this, cardDTO));
+        
+        _hubConnection.On<string>("GameConnected", (message)
+            => OnConnected?.Invoke(this, message));
         
         await _hubConnection.StartAsync();
     }
@@ -39,28 +57,9 @@ public class GameConnection : IGameConnection
         if (_hubConnection != null)
             await _hubConnection.StopAsync();
     }
-
-    public async Task SendMessageAllAsync(string message)
-    {
-        Debug.Assert(_hubConnection != null, nameof(_hubConnection) + " != null");
-        await _hubConnection.InvokeAsync("SendMessageToAll", message);
-    }
-
-    public async Task SendMessageOthersAsync(string message)
-    {
-        Debug.Assert(_hubConnection != null, nameof(_hubConnection) + " != null");
-        await _hubConnection.InvokeAsync("SendMessageToOthers", message);
-    }
     
-    public async Task SendMessageCallerAsync(string message)
+    public async Task GetNameAsync(string playerName, string message)
     {
-        Debug.Assert(_hubConnection != null, nameof(_hubConnection) + " != null");
-        await _hubConnection.InvokeAsync("SendMessageToCaller", message);
-    }
-    
-    public async Task PlayCardAsync(CardDTO cardDTO)
-    {
-        Debug.Assert(_hubConnection != null, nameof(_hubConnection) + " != null");
-        await _hubConnection.InvokeAsync("PlayCard", cardDTO);
+        await _hubConnection.InvokeAsync("SendCoolMessageToOtherPlayer", playerName, message);
     }
 }

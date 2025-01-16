@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Ironclad.Shared\Ironclad.Shared.csproj" />
+    </ItemGroup>
+
 </Project>
